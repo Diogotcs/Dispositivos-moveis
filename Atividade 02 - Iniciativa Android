@@ -156,7 +156,7 @@ Atividade 7: Jogo de Adivinhação de Números
 import kotlin.random.Random
 
 fun main() {
-    val numeroAleatorio = Random.nextInt(1, 101) // Gera um número aleatório entre 1 e 100
+    val numeroAleatorio = Random.nextInt(1, 101) 
     var tentativas = 0
     var adivinhou = false
 
@@ -222,7 +222,7 @@ fun converterTemperatura(temperatura: Double, unidadeOrigem: String, unidadeDest
         "F" to "K" -> (temperatura - 32) * 5/9 + 273.15
         "K" to "C" -> temperatura - 273.15
         "K" to "F" -> (temperatura - 273.15) * 9/5 + 32
-        "C" to "C", "F" to "F", "K" to "K" -> temperatura // Conversão para a mesma unidade
+        "C" to "C", "F" to "F", "K" to "K" -> temperatura 
         else -> null // Caso a conversão seja inválida
     }
 }
