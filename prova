@@ -1,0 +1,34 @@
+package com.example.exemploadapter
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.TextView
+
+class TarefaAdapter(private val context : Context, private val listaTarefas : MutableList<Tarefa>) : ArrayAdapter<Tarefa>(context, 0, listaTarefas) {
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+
+        //Pega a tarefa atual do meu "for"
+        val tarefa = listaTarefas.get(position)
+
+        //Aponta qual layout será utilizado
+        val view =  LayoutInflater.from(context).inflate(R.layout.item_tarefa, parent, false)
+
+        //Pega os campos do layout escolhido
+        val DESCRICAO = view.findViewById<TextView>(R.id.txtdescricao)
+        val ESCOLHA = view.findViewById<CheckBox>(R.id.VIEWESCOLHA)
+        val DATA = view.findViewById<TextView>(R.id.txtdata)
+
+        //Joga o valor da tarefa para o campo da tela
+        DESCRICAO.text = tarefa.DESCRICAO
+        ESCOLHA.text = tarefa.VIEWESCOLHA
+        DATA.text = tarefa.DATA
+
+
+        return view
+    }
+}
