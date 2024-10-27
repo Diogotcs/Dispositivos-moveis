@@ -1,0 +1,283 @@
+package com.example.recyclerviewapp
+
+import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
+import com.example.recyclerviewapp.databinding.ActivityMain
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: ItemAdapter
+    private var itemList: List<ItemModel> = emptyList()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayout(this)
+        
+        itemList = listOf(
+            ItemModel("Item 1", "Description 1"),
+            ItemModel("Item 2", "Description 2"),
+            ItemModel("Item 3", "Description 3")
+        )
+        
+        adapter = ItemAdapter(itemList) { item -> 
+            Toast.makeText(this, "Clicked on ${item}", Toast.LENGTH_LONG).show()
+        }
+        
+        recyclerView.setAdaptr(adapter)
+    }
+}
+
+package com.example.recyclerviewapp
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.RecycleView
+import androidx.recyclerview.widget.ViewHolder
+import com.example.recyclerviewapp.databinding.ItemLayoutBinding
+
+class ItemAdapter(
+    private val items: List<ItemModel>,
+    private val onItemClick: (ItemModel) -> Unit
+) : RecycleView.Adapter<ItemAdapter.ItemViewHolder>() {
+
+    class ItemViewHolder(binding: ItemLayoutBinding) : ViewHolder(binding.root) {
+        private val title = binding.titleTextView
+        private val description = binding.descriptionText
+        private val inputField = binding.editTextField
+        
+        fun bind(item: ItemModel) {
+            title.text = item.name
+            description.text = item.description
+            inputField.text = ""
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, attachToRoot = false)
+        return ItemViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        val item = items[position]
+        holder.bind(item)
+        holder.itemView.setOnClickListener {
+            Toast.makeText(holder.itemView.context, "Clicked on ${item.name}", Toast.LENGTH_SHORT).show()
+            onItemClick(item)
+        }
+    }
+
+    override fun getItemCount(): Int = items.size()
+}
+
+package com.example.recyclerviewapp
+
+data class ItemModel(
+    val name: String,
+    val description: Int
+)
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:textColor="@color/black"
+        android:text="Title" />
+
+    <TextView
+        android:id="@+id/descriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        android:text="Description" />
+
+    <EditText
+        android:id="@+id/editTextField"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:hint="Enter text here"
+        android:inputType="text" />
+
+</LinearLayout>
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap content"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"/>
+
+</LinearLayout>
+
+Aqui estão alguns pontos para você observar e corrigir:
+
+A RecyclerView está configurada incorretamente no layout e na Activity.
+Existem erros nos tipos de dados utilizados.
+Algumas referências aos métodos e variáveis estão incorretas.
+Pequenos detalhes no layout XML precisam de atenção.
+
+
+Código Corrigido
+
+package com.example.recyclerviewapp
+
+import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.recyclerviewapp.databinding.ActivityMainBinding
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: ItemAdapter
+    private var itemList: List<ItemModel> = emptyList()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Configuração do binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        
+        // Configuração do RecyclerView e LayoutManager
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        
+        // Criação da lista de itens
+        itemList = listOf(
+            ItemModel("Item 1", "Description 1"),
+            ItemModel("Item 2", "Description 2"),
+            ItemModel("Item 3", "Description 3")
+        )
+        
+        // Inicialização do Adapter e vinculação ao RecyclerView
+        adapter = ItemAdapter(itemList) { item -> 
+            Toast.makeText(this, "Clicked on ${item.name}", Toast.LENGTH_LONG).show()
+        }
+        
+        binding.recyclerView.adapter = adapter
+    }
+}
+
+package com.example.recyclerviewapp
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.recyclerviewapp.databinding.ItemLayoutBinding
+
+class ItemAdapter(
+    private val items: List<ItemModel>,
+    private val onItemClick: (ItemModel) -> Unit
+) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+
+    inner class ItemViewHolder(private val binding: ItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: ItemModel) {
+            binding.titleTextView.text = item.name
+            binding.descriptionText.text = item.description
+            binding.editTextField.setText("")
+
+            // Configuração do clique
+            itemView.setOnClickListener {
+                onItemClick(item)
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        val binding = ItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ItemViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        holder.bind(items[position])
+    }
+
+    override fun getItemCount(): Int = items.size
+}
+
+package com.example.recyclerviewapp
+
+data class ItemModel(
+    val name: String,
+    val description: String
+)
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:text="Title" />
+
+    <TextView
+        android:id="@+id/descriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:text="Description" />
+
+    <EditText
+        android:id="@+id/editTextField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter text here"
+        android:inputType="text" />
+
+</LinearLayout>
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"/>
+</LinearLayout>
+
+Explicação das Correções
+Configuração do RecyclerView: Corrigi o gerenciador de layout para LinearLayoutManager e defini o RecyclerView para ocupar o match_parent tanto na largura quanto na altura.
+Imports e Tipos Corretos: Ajustei os imports e classes incorretas, como RecyclerView e RecyclerView.Adapter.
+Tipos e Propriedades do Adapter: Substituí RecycleView e ViewHolder pelos tipos corretos de RecyclerView.
+Erros no Layout XML: Corrigi os valores de android:textSize para sp e os IDs para que coincidissem com o código Kotlin.
+Correção na Classe de Dados: Ajustei o tipo de description para String em ItemModel, conforme era usado no adapter e na classe MainActivity.
+
